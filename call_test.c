@@ -47,7 +47,7 @@ int main(void) {
         printf(ANSI_GREEN "\tOK\n" ANSI_RESET);
 
 
-        // testing argumento passing into python
+        // testing argument passing into python
         printf("Running test_pass_integer... ");
         args = PyTuple_New(1);
         val = PyLong_FromLong(5);
