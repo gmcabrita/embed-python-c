@@ -5,6 +5,10 @@
 #define ANSI_GREEN   "\x1b[32m"
 #define ANSI_RESET   "\x1b[0m"
 
+int test_return_int(int n) {
+    return n * 5;
+}
+
 int main(void) {
     PyObject *name, *module, *func, *args, *val;//, *dict;
 
@@ -23,6 +27,7 @@ int main(void) {
 
         // borrowing the function from the python module
         //func = PyDict_GetItemString(dict, "test");
+
         printf("Running test_return_int... ");
         func = PyObject_GetAttrString(module, "test_return_int");
         PYERR_IF(PyCallable_Check(func),
@@ -56,6 +61,16 @@ int main(void) {
         Py_DECREF(val);
         Py_DECREF(args);
         printf(ANSI_GREEN "\tOK\n" ANSI_RESET);
+
+        // testing bidirectionality
+        printf("Running test_call_c... ");
+        func = PyObject_GetAttrString(module, "test_call_c");
+        PYERR_IF(PyCallable_Check(func),
+            PyObject *x = PyObject_CallObject(func, NULL);
+            assert((int) PyLong_AsLong(x) == test_return_int(5) * 5);
+            Py_DECREF(x);
+        );
+        printf(ANSI_GREEN "\t\tOK\n" ANSI_RESET);
 
         Py_DECREF(module);
     );
